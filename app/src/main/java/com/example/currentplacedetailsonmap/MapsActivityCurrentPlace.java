@@ -399,20 +399,20 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             //if(mList.get(i).contains(name))
             if(temp.contains(name))
             {
-                String temp2 = mList.get(i);
-                n.add(temp2);
-                //rtr.add(mList.get(i));
+                int nn = mList.get(i).indexOf(':');
+                n.add(mList.get(i).substring(nn+1));
             }
             if(temp.contains(address))
             {
-                a.add(mList.get(i));
+                int an = mList.get(i).indexOf(':');
+                a.add(mList.get(i).substring(an+1));
             }
             if(temp.contains(loc))
             {
                 int lt = mList.get(i+1).indexOf(':');
                 int lg = mList.get(i+2).indexOf(':');
-                la.add(mList.get(i+1).substring(lt+1,lt+8));
-                lo.add(mList.get(i+2).substring(lg+1,lg+8));
+                la.add(mList.get(i+1).substring(lt+1,lt+9));
+                lo.add(mList.get(i+2).substring(lg+1,lg+9));
             }
         }
         rtr.add(n);
@@ -424,8 +424,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     private void getListOfRecyclePlants()
     {
         //ArrayList<String> rtr = null;
-        new Thread(new Runnable() {
-            @Override
+        Thread t = new Thread(new Runnable() {
+            //@Override
             public void run() {
 
                 URL url = null;
@@ -468,7 +468,9 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                 }
             }
 
-        }).start();
+        });//.start();
+        t.setPriority(10);
+        t.start();
         //return rtr;
     }
     private String makeAPIUrl()
@@ -483,14 +485,14 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         String currentLoc = "location="+ String.valueOf(lat)+","+String.valueOf(lon);
         //System.out.println(currentLoc);
         String locBias = "&locationbias=circle:2000@"+pos;
-        String radius = "&radius=10000";
+        String radius = "&radius=50000";
         String keyword = "&keyword=recycle@20center";
 
         String fields = "&fields=photos,formatted_address,name,rating,opening_hours,geometry";
         String rankby = "&rankby=distance";
 
         //text search
-        String query ="query=recycling@20recycle@20center@20plant";
+        String query ="query=recycling+recycle+center+plant+near+me";
         String base = "https://maps.googleapis.com/maps/api/place/textsearch/json?";
         return base+query+currentLoc+radius+yourKey;
 
